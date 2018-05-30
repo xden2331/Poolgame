@@ -2,6 +2,8 @@
 #include <QDialog>
 #include "ball.h"
 #include "game.h"
+#include "gamemanager.h"
+#include "keyeventmanager.h"
 
 namespace Ui {
 class Dialog;
@@ -62,5 +64,14 @@ private:
      * @brief m_game - our game object to be played
      */
     Game* m_game = nullptr;
+
+    GameManager* m_gameManager = nullptr;
+
+    KeyEventManager* m_keyManager = new KeyEventManager();
+
+    // QWidget interface
+protected:
+    virtual void keyPressEvent(QKeyEvent *event);
+    virtual void keyReleaseEvent(QKeyEvent *event);
 };
 

@@ -7,14 +7,14 @@
 class KeyEventManager : public QWidget
 {
 public:
-    KeyEventManager() = delete;
+    KeyEventManager(){}
+    ~KeyEventManager(){}
     bool m_pressOnEsc = false;
     bool m_pressOnR = false;
 
     // QWidget interface
-protected:
-    virtual void keyPressEvent(QKeyEvent *event) override;
-    virtual void keyReleaseEvent(QKeyEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event);
+    virtual void keyReleaseEvent(QKeyEvent *event);
 };
 
 #endif // KEYEVENTMANAGER_H

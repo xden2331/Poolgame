@@ -25,6 +25,8 @@ Dialog::Dialog(Game *game, QWidget* parent) :
 
     // set the window size to be at least the table size
     this->resize(game->getMinimumWidth(), game->getMinimumHeight());
+
+    m_gameManager = new GameManager(m_game, m_keyManager);
 }
 
 Dialog::~Dialog()
@@ -46,7 +48,8 @@ void Dialog::nextAnim() {
 void Dialog::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    m_game->render(painter);
+    //m_game->render(painter);
+    m_gameManager->render(painter);
 }
 
 void Dialog::mousePressEvent(QMouseEvent* event) {
@@ -73,4 +76,14 @@ void Dialog::evalAllEventsOfTypeSpecified(MouseEventable::EVENTS t, QMouseEvent 
             Qu.erase(Qu.begin() + i);
         }
     }
+}
+
+void Dialog::keyPressEvent(QKeyEvent *event)
+{
+    m_keyManager->keyPressEvent(event);
+}
+
+void Dialog::keyReleaseEvent(QKeyEvent *event)
+{
+    m_keyManager->keyReleaseEvent(event);
 }
