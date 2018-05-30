@@ -1,0 +1,13 @@
+#include "gamemanager.h"
+
+GameManager::GameManager(Game *game, KeyEventManager *keyManager)
+    : m_game(game), m_keyManager(keyManager)
+{
+    
+}
+
+void GameManager::render(QPainter &painter) const
+{
+    m_game->render(painter);
+    if(m_keyManager->)
+}
