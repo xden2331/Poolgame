@@ -34,7 +34,9 @@ SOURCES += \
     stagetwofactory.cpp \
     pocket.cpp \
     stagetwobuilder.cpp \
-    balldecorator.cpp
+    balldecorator.cpp \
+    gamemanager.cpp \
+    keyeventmanager.cpp
 
 HEADERS += \
         dialog.h \
@@ -49,7 +51,10 @@ HEADERS += \
     pocket.h \
     stagetwobuilder.h \
     balldecorator.h \
-    mouseeventable.h
+    gamemanager.h \
+    keyeventmanager.h \
+    memento.h \
+    state.h
 
 FORMS += \
         dialog.ui

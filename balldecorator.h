@@ -2,7 +2,6 @@
 
 #include "ball.h"
 #include "utils.h"
-#include "mouseeventable.h"
 
 /**
  * @brief The BallDecorator class
@@ -14,6 +13,7 @@ protected:
     Ball* m_subBall;
 public:
     BallDecorator(Ball* b) : m_subBall(b) {}
+
     virtual ~BallDecorator() { delete m_subBall; }
     // mess of forwarded requests
     // is this the downside of a decorator..?
@@ -37,7 +37,7 @@ public:
  * The ball will only be able to be controlled if the mouse click&drag event originated at
  * the position of the cue ball.
  */
-class CueBall : public BallDecorator, public MouseEventable {
+class CueBall : public BallDecorator {
 protected:
     // keep track of where the mouse click started at
     QVector2D m_startMousePos;
@@ -50,7 +50,8 @@ protected:
     inline bool isSubBallMoving() const { return m_subBall->getVelocity().length() > MovementEpsilon; }
 
 public:
-    CueBall(Ball* b) : BallDecorator(b), MouseEventable(this) {}
+    CueBall(Ball* b) : BallDecorator(b) {}
+    CueBall(const CueBall& another) : BallDecorator(another.m_subBall->clone()){}
     ~CueBall() {}
 
     /**
@@ -66,95 +67,23 @@ public:
      *      Chooses not to draw IF the click is not within bounds
      * @param e - the mouse event caused by clicking
      */
-    virtual void mouseClickEvent(QMouseEvent* e) override;
+    virtual void mouseClickEvent(QMouseEvent* e);
     
     /**
      * @brief mouseMoveEvent - update where the current end of the mouse drag is.
      *      Used when the mouse is moved, i.e. not released, but dragged.
      * @param e - the mouse event caused by clicking
      */
-    virtual void mouseMoveEvent(QMouseEvent* e) override;
+    virtual void mouseMoveEvent(QMouseEvent* e);
 
     /**
      * @brief mouseReleaseEvent - update where the end of the mouse drag is, & release the click
      *  This will update the ball velocity if drawn.
      * @param e - the mouse event caused by clicking
      */
-    virtual void mouseReleaseEvent(QMouseEvent* e) override;
-};
+    virtual void mouseReleaseEvent(QMouseEvent* e);
 
-class BallSparkleDecorator : public BallDecorator {
-protected:
-    // our particle that is drawn
-    struct Sparkle {
-        Sparkle( QPointF pos)
-            :pos(pos){}
-        // absolute position
-        QPointF pos;
-        double opacity = 1.0;
-        double width = 5.0;
-        double height = 5.0;
-    };
-
-    // how fast the opacity is faded per drawn frame.
-    // yes, this is frame dependent.
-    static constexpr double fadeRate = 0.01;
-    // our particle effects that will be drawn per frame
-    std::vector<Sparkle> m_sparklePositions;
+    // Ball interface
 public:
-    BallSparkleDecorator(Ball* b) : BallDecorator(b) {}
-
-    /**
-     * @brief render - draw the underlying ball and also the sparkles
-     * @param painter - the brush to use to draw
-     * @param offset - the offset that this ball is from the origin
-     */
-    void render(QPainter &painter, const QVector2D &offset);
-};
-
-class BallSmashDecorator : public BallDecorator {
-protected:
-    struct Crumb {
-        Crumb(QPointF cPos,double width,double height,QVector2D dir, double opacity = 0)
-            :pos(cPos),width(width),height(height),dir(dir),opacity(opacity){}
-        // absolute position (from origin)
-        QPointF pos;
-        double width = 5.0;
-        double height = 5.0;
-        // particle tween direction
-        QVector2D dir;
-        double opacity = 1.0;
-    };
-    // how often they fade per frame
-    static constexpr double fadeRate = 0.01;
-    // rate of escape
-    static constexpr double moveRate = 0.3;
-    std::vector<Crumb> m_crumbs;
-
-    void addCrumbs(QPointF cPos);
-public:
-    BallSmashDecorator(Ball* b) : BallDecorator(b) {}
-
-    /**
-     * @brief changeVelocity - set the velocity of the ball, as well as generate particles (if applicable)
-     * @param delta - the change in velocity
-     */
-    virtual void changeVelocity(const QVector2D& delta) override;
-
-    /**
-     * @brief multiplyVelocity - mul the velocity, as well as generate particles, if direction changes.
-     * @param vel
-     */
-    virtual void multiplyVelocity(const QVector2D& vel) override {
-        m_subBall->multiplyVelocity(vel);
-        if (vel.x() < 0 || vel.y() < 0) addCrumbs(m_subBall->getPosition().toPointF());
-    }
-
-    /**
-     * @brief render - draw the ball, the smash particles, as well as update the particle effects positions
-     *  yes. we animate in the render function! ):<
-     * @param painter - the brush to use to draw
-     * @param offset - the offset from the window that this ball's pos is.
-     */
-    virtual void render(QPainter &painter, const QVector2D &offset) override;
+    virtual Ball *clone() override {return new CueBall(*this);}
 };

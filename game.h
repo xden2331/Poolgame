@@ -9,6 +9,8 @@
 #include "ball.h"
 #include "balldecorator.h"
 #include "utils.h"
+#include "memento.h"
+#include "state.h"
 
 class Game {
     std::vector<Ball*>* m_balls;
@@ -24,7 +26,6 @@ class Game {
     void incrementShake(double amount=SCREENSHAKEDIST) { m_shakeRadius += amount; }
 private:
     // store the functions that get scanned through whenever a mouse event happens
-    MouseEventable::EventQueue m_mouseEventFunctions;
 
     /**
      * @brief updateShake - update the screenshake radius (make it smaller)
@@ -77,18 +78,9 @@ public:
         return !(collisionVector.length() > ballA->getRadius() + ballB->getRadius());
     }
 
-    /**
-     * @brief addMouseFunctions - append all of the specified functions to be
-     *  our eventqueue - these will be cycled through onclick, etc
-     * @param fns
-     */
-    void addMouseFunctions(MouseEventable::EventQueue fns) {
-        std::copy(fns.begin(), fns.end(), std::back_inserter(m_mouseEventFunctions));
-    }
+    Memento* createMemento();
 
-    /**
-     * @brief getEventFns - get all of our event functions (mouseclicksfns, etc)
-     * @return event queue of event functions
-     */
-    MouseEventable::EventQueue& getEventFns() { return m_mouseEventFunctions; }
+    void revertMemento(Memento& memento);
+
+    std::vector<Ball*>* getBalls() const {return m_balls;}
 };

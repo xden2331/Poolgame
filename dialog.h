@@ -2,6 +2,8 @@
 #include <QDialog>
 #include "ball.h"
 #include "game.h"
+#include "gamemanager.h"
+#include "keyeventmanager.h"
 
 namespace Ui {
 class Dialog;
@@ -36,14 +38,6 @@ public slots:
     void mouseReleaseEvent(QMouseEvent* event);
     // qt mouse move
     void mouseMoveEvent(QMouseEvent* event);
-private:
-    /**
-     * @brief evalAllEventsOfTypeSpecified - for each of the functions in the event queue
-     *  invoke them if the event type is equal
-     * @param t - the event type
-     * @param event - the event to forward on to the function
-     */
-    void evalAllEventsOfTypeSpecified(MouseEventable::EVENTS t, QMouseEvent* event);
 
 private:
     /**
@@ -62,5 +56,14 @@ private:
      * @brief m_game - our game object to be played
      */
     Game* m_game = nullptr;
+
+    GameManager* m_gameManager = nullptr;
+
+    KeyEventManager* m_keyManager = new KeyEventManager();
+
+    bool m_needMemento = true;
+    // QWidget interface
+protected:
+    virtual void keyPressEvent(QKeyEvent *event);
 };
 
