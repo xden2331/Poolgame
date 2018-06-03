@@ -10,11 +10,3 @@ void KeyEventManager::keyPressEvent(QKeyEvent *event)
         m_pressOnR = true;
     }
 }
-
-void KeyEventManager::keyReleaseEvent(QKeyEvent *event)
-{
-    int key = event->key();
-    if(key == Qt::Key_R){
-        m_pressOnR = false;
-    }
-}

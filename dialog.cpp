@@ -43,12 +43,19 @@ void Dialog::tryRender() {
 
 void Dialog::nextAnim() {
     m_game->animate(1.0/(double)animFrameMS);
+    if(m_needMemento == true){
+        m_gameManager->createMemento();
+        m_needMemento = false;
+    }
+    if(m_keyManager->m_pressOnR){
+        m_gameManager->revert();
+        m_keyManager->m_pressOnR = false;
+    }
 }
 
 void Dialog::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    //m_game->render(painter);
     m_gameManager->render(painter);
 }
 
@@ -81,9 +88,4 @@ void Dialog::evalAllEventsOfTypeSpecified(MouseEventable::EVENTS t, QMouseEvent 
 void Dialog::keyPressEvent(QKeyEvent *event)
 {
     m_keyManager->keyPressEvent(event);
-}
-
-void Dialog::keyReleaseEvent(QKeyEvent *event)
-{
-    m_keyManager->keyReleaseEvent(event);
 }

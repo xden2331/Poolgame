@@ -9,6 +9,8 @@
 #include "ball.h"
 #include "balldecorator.h"
 #include "utils.h"
+#include "memento.h"
+#include "state.h"
 
 class Game {
     std::vector<Ball*>* m_balls;
@@ -91,4 +93,10 @@ public:
      * @return event queue of event functions
      */
     MouseEventable::EventQueue& getEventFns() { return m_mouseEventFunctions; }
+
+    Memento* createMemento();
+
+    void revertMemento(Memento& memento);
+
+    std::vector<Ball*>* getBalls() const {return m_balls;}
 };

@@ -69,9 +69,9 @@ private:
 
     KeyEventManager* m_keyManager = new KeyEventManager();
 
+    bool m_needMemento = true;
     // QWidget interface
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
-    virtual void keyReleaseEvent(QKeyEvent *event);
 };
 

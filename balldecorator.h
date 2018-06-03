@@ -13,7 +13,13 @@ class BallDecorator : public Ball {
 protected:
     Ball* m_subBall;
 public:
-    BallDecorator(Ball* b) : m_subBall(b) {}
+    BallDecorator(Ball* b) :
+        Ball(b->getColor(),
+             b->getPosition(),
+             b->getVelocity(),
+             b->getMass(),
+             b->getRadius()),m_subBall(b) {}
+
     virtual ~BallDecorator() { delete m_subBall; }
     // mess of forwarded requests
     // is this the downside of a decorator..?
@@ -51,6 +57,7 @@ protected:
 
 public:
     CueBall(Ball* b) : BallDecorator(b), MouseEventable(this) {}
+    CueBall(const CueBall& another) : BallDecorator(another.m_subBall), MouseEventable(this){}
     ~CueBall() {}
 
     /**
@@ -81,6 +88,10 @@ public:
      * @param e - the mouse event caused by clicking
      */
     virtual void mouseReleaseEvent(QMouseEvent* e) override;
+
+    // Ball interface
+public:
+    virtual Ball *clone() override {return new CueBall(*this);}
 };
 
 class BallSparkleDecorator : public BallDecorator {
@@ -103,13 +114,19 @@ protected:
     std::vector<Sparkle> m_sparklePositions;
 public:
     BallSparkleDecorator(Ball* b) : BallDecorator(b) {}
+    BallSparkleDecorator(const BallSparkleDecorator& another):
+        BallDecorator(another.m_subBall){}
 
     /**
      * @brief render - draw the underlying ball and also the sparkles
      * @param painter - the brush to use to draw
      * @param offset - the offset that this ball is from the origin
      */
-    void render(QPainter &painter, const QVector2D &offset);
+    void render(QPainter &painter, const QVector2D &offset) override;
+
+    // Ball interface
+public:
+    virtual Ball *clone() override {return new BallSparkleDecorator(*this);}
 };
 
 class BallSmashDecorator : public BallDecorator {
@@ -134,6 +151,8 @@ protected:
     void addCrumbs(QPointF cPos);
 public:
     BallSmashDecorator(Ball* b) : BallDecorator(b) {}
+    BallSmashDecorator(const BallSmashDecorator& another):
+        BallDecorator(another.m_subBall){}
 
     /**
      * @brief changeVelocity - set the velocity of the ball, as well as generate particles (if applicable)
@@ -157,4 +176,8 @@ public:
      * @param offset - the offset from the window that this ball's pos is.
      */
     virtual void render(QPainter &painter, const QVector2D &offset) override;
+
+    // Ball interface
+public:
+    virtual Ball *clone() override {return new BallSmashDecorator(*this);}
 };

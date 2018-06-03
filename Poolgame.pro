@@ -53,7 +53,9 @@ HEADERS += \
     balldecorator.h \
     mouseeventable.h \
     gamemanager.h \
-    keyeventmanager.h
+    keyeventmanager.h \
+    memento.h \
+    state.h
 
 FORMS += \
         dialog.ui

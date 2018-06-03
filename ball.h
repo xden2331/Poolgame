@@ -21,8 +21,6 @@ public:
          QVector2D velocity, double mass, int radius) :
         m_brush(colour), m_pos(position), m_velocity(velocity),
         m_mass(mass), m_radius(radius) {}
-    Ball() {}
-
     /**
      * @brief render - draw the ball to the screen
      * @param painter - QPainter that is owned by the dialog
@@ -50,11 +48,14 @@ public:
     virtual double getMass() const { return m_mass; }
     virtual double getRadius() const { return m_radius; }
     virtual QVector2D getPosition() const { return m_pos; }
+    virtual QColor getColor() const { return m_brush.color();}
     virtual void setPosition(QVector2D p) { m_pos = p; }
 
     // whether the ball will break, and handle accordingly
     // for base ball, do nothing. insert into rhs if necessary
     virtual bool applyBreak(const QVector2D&, std::vector<Ball*>&) { return false; }
+
+    virtual Ball* clone() = 0;
 };
 
 class StageOneBall : public Ball {
@@ -62,11 +63,21 @@ public:
     StageOneBall(QColor colour, QVector2D position,
                  QVector2D velocity, double mass, int radius) :
         Ball(colour, position, velocity, mass, radius) {}
+    StageOneBall(const StageOneBall& another):
+        Ball(another.m_brush.color(),
+             another.m_pos,
+             another.m_velocity,
+             another.m_mass,
+             another.m_radius){}
     /**
      * @brief render - draw the ball to the screen
      * @param painter - QPainter that is owned by the dialog
      */
     void render(QPainter &painter, const QVector2D& offset) override;
+
+    // Ball interface
+public:
+    virtual Ball *clone() override{return new StageOneBall(*this);}
 };
 
 class CompositeBall : public Ball {
@@ -80,6 +91,17 @@ public:
     CompositeBall(QColor colour, QVector2D position,
                  QVector2D velocity, double mass, int radius, double strength) :
         Ball(colour, position, velocity, mass, radius), m_strength(strength) { }
+    CompositeBall(const CompositeBall& another):
+        Ball(another.m_brush.color(),
+             another.m_pos,
+             another.m_velocity,
+             another.m_mass,
+             another.m_radius), m_strength(another.m_strength){
+        m_children = std::vector<Ball*>();
+        for(Ball* b:another.m_children){
+            m_children.push_back(b->clone());
+        }
+    }
 
     /**
      * @brief render - draw the ball to the screen
@@ -97,4 +119,8 @@ public:
      * @return whether the ball broke or not
      */
     virtual bool applyBreak(const QVector2D& deltaV, std::vector<Ball*>& parentlist) override;
+
+    // Ball interface
+public:
+    virtual Ball *clone() override {return new CompositeBall(*this);}
 };
