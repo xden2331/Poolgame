@@ -194,6 +194,6 @@ void Game::revertMemento(Memento &memento){
     auto preBalls = previous->getBalls();
     this->m_balls->clear();
     for(auto pb : preBalls){
-        this->m_balls->push_back(pb);
+        this->m_balls->push_back(pb->clone());
     }
 }

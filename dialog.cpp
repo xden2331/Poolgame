@@ -6,6 +6,8 @@
 #include <QMouseEvent>
 #include "utils.h"
 
+int test = 0;
+
 Dialog::Dialog(Game *game, QWidget* parent) :
     QDialog(parent),
     ui(new Ui::Dialog),
@@ -46,6 +48,9 @@ void Dialog::nextAnim() {
     if(m_needMemento == true){
         m_gameManager->createMemento();
         m_needMemento = false;
+    }
+    if(test == 2){
+        ++test;
     }
     if(m_keyManager->m_pressOnR){
         m_gameManager->revert();

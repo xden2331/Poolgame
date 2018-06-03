@@ -13,12 +13,7 @@ class BallDecorator : public Ball {
 protected:
     Ball* m_subBall;
 public:
-    BallDecorator(Ball* b) :
-        Ball(b->getColor(),
-             b->getPosition(),
-             b->getVelocity(),
-             b->getMass(),
-             b->getRadius()),m_subBall(b) {}
+    BallDecorator(Ball* b) : m_subBall(b) {}
 
     virtual ~BallDecorator() { delete m_subBall; }
     // mess of forwarded requests
@@ -57,7 +52,9 @@ protected:
 
 public:
     CueBall(Ball* b) : BallDecorator(b), MouseEventable(this) {}
-    CueBall(const CueBall& another) : BallDecorator(another.m_subBall), MouseEventable(this){}
+    CueBall(const CueBall& another) : BallDecorator(another.m_subBall), MouseEventable(this){
+        m_subBall = another.m_subBall->clone();
+    }
     ~CueBall() {}
 
     /**
@@ -92,92 +89,4 @@ public:
     // Ball interface
 public:
     virtual Ball *clone() override {return new CueBall(*this);}
-};
-
-class BallSparkleDecorator : public BallDecorator {
-protected:
-    // our particle that is drawn
-    struct Sparkle {
-        Sparkle( QPointF pos)
-            :pos(pos){}
-        // absolute position
-        QPointF pos;
-        double opacity = 1.0;
-        double width = 5.0;
-        double height = 5.0;
-    };
-
-    // how fast the opacity is faded per drawn frame.
-    // yes, this is frame dependent.
-    static constexpr double fadeRate = 0.01;
-    // our particle effects that will be drawn per frame
-    std::vector<Sparkle> m_sparklePositions;
-public:
-    BallSparkleDecorator(Ball* b) : BallDecorator(b) {}
-    BallSparkleDecorator(const BallSparkleDecorator& another):
-        BallDecorator(another.m_subBall){}
-
-    /**
-     * @brief render - draw the underlying ball and also the sparkles
-     * @param painter - the brush to use to draw
-     * @param offset - the offset that this ball is from the origin
-     */
-    void render(QPainter &painter, const QVector2D &offset) override;
-
-    // Ball interface
-public:
-    virtual Ball *clone() override {return new BallSparkleDecorator(*this);}
-};
-
-class BallSmashDecorator : public BallDecorator {
-protected:
-    struct Crumb {
-        Crumb(QPointF cPos,double width,double height,QVector2D dir, double opacity = 0)
-            :pos(cPos),width(width),height(height),dir(dir),opacity(opacity){}
-        // absolute position (from origin)
-        QPointF pos;
-        double width = 5.0;
-        double height = 5.0;
-        // particle tween direction
-        QVector2D dir;
-        double opacity = 1.0;
-    };
-    // how often they fade per frame
-    static constexpr double fadeRate = 0.01;
-    // rate of escape
-    static constexpr double moveRate = 0.3;
-    std::vector<Crumb> m_crumbs;
-
-    void addCrumbs(QPointF cPos);
-public:
-    BallSmashDecorator(Ball* b) : BallDecorator(b) {}
-    BallSmashDecorator(const BallSmashDecorator& another):
-        BallDecorator(another.m_subBall){}
-
-    /**
-     * @brief changeVelocity - set the velocity of the ball, as well as generate particles (if applicable)
-     * @param delta - the change in velocity
-     */
-    virtual void changeVelocity(const QVector2D& delta) override;
-
-    /**
-     * @brief multiplyVelocity - mul the velocity, as well as generate particles, if direction changes.
-     * @param vel
-     */
-    virtual void multiplyVelocity(const QVector2D& vel) override {
-        m_subBall->multiplyVelocity(vel);
-        if (vel.x() < 0 || vel.y() < 0) addCrumbs(m_subBall->getPosition().toPointF());
-    }
-
-    /**
-     * @brief render - draw the ball, the smash particles, as well as update the particle effects positions
-     *  yes. we animate in the render function! ):<
-     * @param painter - the brush to use to draw
-     * @param offset - the offset from the window that this ball's pos is.
-     */
-    virtual void render(QPainter &painter, const QVector2D &offset) override;
-
-    // Ball interface
-public:
-    virtual Ball *clone() override {return new BallSmashDecorator(*this);}
 };

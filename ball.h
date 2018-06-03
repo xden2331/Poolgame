@@ -21,6 +21,7 @@ public:
          QVector2D velocity, double mass, int radius) :
         m_brush(colour), m_pos(position), m_velocity(velocity),
         m_mass(mass), m_radius(radius) {}
+    Ball(){}
     /**
      * @brief render - draw the ball to the screen
      * @param painter - QPainter that is owned by the dialog

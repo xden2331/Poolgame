@@ -250,16 +250,6 @@ Game* StageTwoBuilder::getResult() {
     CueBall* cb = new CueBall(c);
     m_buildingBalls->front() = static_cast<Ball*>(cb);
 
-    // just for fun, lets make a random ball have a trail
-    size_t ind = rand()%m_buildingBalls->size();
-    Ball* sparkleBall = m_buildingBalls->at(ind);
-    m_buildingBalls->at(ind) =  new BallSparkleDecorator(sparkleBall);
-
-    // and a random ball have bump effects
-    ind = rand()%m_buildingBalls->size();
-    Ball* bumpBall = m_buildingBalls->at(ind);
-    m_buildingBalls->at(ind) = new BallSmashDecorator(bumpBall);
-
     Game* retGame = new Game(m_buildingBalls, m_buildingTable);
     // register all the mouse functions for the cueball
     retGame->addMouseFunctions(cb->getEvents());
