@@ -83,4 +83,9 @@ public:
     void revertMemento(Memento& memento);
 
     std::vector<Ball*>* getBalls() const {return m_balls;}
+
+    bool cueBallMoving() {
+        CueBall* cue = dynamic_cast<CueBall*>(m_balls->at(0));
+        return cue->isSubBallMoving();
+    }
 };

@@ -4,7 +4,11 @@
 void CueBall::render(QPainter &painter, const QVector2D &offset) {
     m_subBall->render(painter, offset);
     // stop drawing the line if we're moving at all
-    if (isSubBallMoving()) isDragging = false;
+    if (isSubBallMoving()) {
+        isDragging = false;
+    }else{
+        m_subBall->setVelocity(QVector2D(0,0));
+    }
     if (isDragging) {
         painter.drawLine(m_startMousePos.toPointF(), m_endMousePos.toPointF());
     }

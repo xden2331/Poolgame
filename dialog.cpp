@@ -6,8 +6,6 @@
 #include <QMouseEvent>
 #include "utils.h"
 
-int test = 0;
-
 Dialog::Dialog(Game *game, QWidget* parent) :
     QDialog(parent),
     ui(new Ui::Dialog),
@@ -45,16 +43,15 @@ void Dialog::tryRender() {
 
 void Dialog::nextAnim() {
     m_game->animate(1.0/(double)animFrameMS);
-    if(m_needMemento == true){
+    bool isCueBallMoving = m_game->cueBallMoving();
+    if(!isCueBallMoving && !m_hasMemento){
         m_gameManager->createMemento();
-        m_needMemento = false;
-    }
-    if(test == 2){
-        ++test;
+        m_hasMemento = true;
     }
     if(m_keyManager->m_pressOnR){
-        m_gameManager->revert();
+        m_gameManager->revert(isCueBallMoving);
         m_keyManager->m_pressOnR = false;
+        m_hasMemento = false;
     }
 }
 

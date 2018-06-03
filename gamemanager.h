@@ -24,7 +24,7 @@ public:
 
     void createMemento();
 
-    void revert();
+    void revert(bool);
 
 private:
     Game* m_game;

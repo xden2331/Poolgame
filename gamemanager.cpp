@@ -7,6 +7,7 @@ GameManager::GameManager(Game *game, KeyEventManager *keyManager)
     int height = m_game->getMinimumHeight();
     m_rect = new QRect(QPoint(width/4, height/4),
                        QPoint(width*0.75, height*0.75));
+    m_memento->push_back(m_game->createMemento());
 }
 
 void GameManager::render(QPainter &painter) const
@@ -17,8 +18,13 @@ void GameManager::render(QPainter &painter) const
     }
 }
 
-void GameManager::revert(){
-    m_game->revertMemento(*(m_memento->at(0)));
+void GameManager::revert(bool isCueBallMoving){
+    if(isCueBallMoving){
+        m_game->revertMemento(*(m_memento->at(0)));
+        return;
+    }
+    auto memento = (m_memento->size() > 1 ? *(m_memento->end()-1) : *(m_memento->end()));
+    m_game->revertMemento(*memento);
 }
 
 void GameManager::createMemento(){

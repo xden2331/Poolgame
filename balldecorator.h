@@ -46,9 +46,6 @@ protected:
     // whether the drag is happening
     bool isDragging = false;
 
-    // whether we can consider this ball as having stopped.
-    inline bool isSubBallMoving() const { return m_subBall->getVelocity().length() > MovementEpsilon; }
-
 public:
     CueBall(Ball* b) : BallDecorator(b) {}
     CueBall(const CueBall& another) : BallDecorator(another.m_subBall->clone()){}
@@ -82,6 +79,9 @@ public:
      * @param e - the mouse event caused by clicking
      */
     virtual void mouseReleaseEvent(QMouseEvent* e);
+
+    // whether we can consider this ball as having stopped.
+    inline bool isSubBallMoving() const { return m_subBall->getVelocity().length() > MovementEpsilon; }
 
     // Ball interface
 public:
