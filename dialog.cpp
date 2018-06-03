@@ -65,29 +65,17 @@ void Dialog::paintEvent(QPaintEvent *)
 }
 
 void Dialog::mousePressEvent(QMouseEvent* event) {
-    evalAllEventsOfTypeSpecified(MouseEventable::EVENTS::MouseClickFn, event);
+    CueBall* cue = dynamic_cast<CueBall*>(m_game->getBalls()->at(0));
+    cue->mouseClickEvent(event);
 }
 
 void Dialog::mouseReleaseEvent(QMouseEvent* event) {
-    evalAllEventsOfTypeSpecified(MouseEventable::EVENTS::MouseRelFn, event);
+    CueBall* cue = dynamic_cast<CueBall*>(m_game->getBalls()->at(0));
+    cue->mouseReleaseEvent(event);
 }
 void Dialog::mouseMoveEvent(QMouseEvent* event) {
-    evalAllEventsOfTypeSpecified(MouseEventable::EVENTS::MouseMoveFn, event);
-}
-
-void Dialog::evalAllEventsOfTypeSpecified(MouseEventable::EVENTS t, QMouseEvent *event) {
-    // handle all the clicky events, and remove them if they've xPIRED
-    MouseEventable::EventQueue& Qu = m_game->getEventFns();
-    for (ssize_t i = Qu.size()-1; i >= 0; i--) {
-        if (auto spt = (Qu.at(i)).lock()) {
-            if (spt->second == t) {
-                spt->first(event);
-            }
-        } else {
-            // remove this element from our vector
-            Qu.erase(Qu.begin() + i);
-        }
-    }
+    CueBall* cue = dynamic_cast<CueBall*>(m_game->getBalls()->at(0));
+    cue->mouseMoveEvent(event);
 }
 
 void Dialog::keyPressEvent(QKeyEvent *event)

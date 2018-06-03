@@ -38,14 +38,6 @@ public slots:
     void mouseReleaseEvent(QMouseEvent* event);
     // qt mouse move
     void mouseMoveEvent(QMouseEvent* event);
-private:
-    /**
-     * @brief evalAllEventsOfTypeSpecified - for each of the functions in the event queue
-     *  invoke them if the event type is equal
-     * @param t - the event type
-     * @param event - the event to forward on to the function
-     */
-    void evalAllEventsOfTypeSpecified(MouseEventable::EVENTS t, QMouseEvent* event);
 
 private:
     /**

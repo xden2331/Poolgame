@@ -51,7 +51,6 @@ HEADERS += \
     pocket.h \
     stagetwobuilder.h \
     balldecorator.h \
-    mouseeventable.h \
     gamemanager.h \
     keyeventmanager.h \
     memento.h \

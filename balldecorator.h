@@ -2,7 +2,6 @@
 
 #include "ball.h"
 #include "utils.h"
-#include "mouseeventable.h"
 
 /**
  * @brief The BallDecorator class
@@ -38,7 +37,7 @@ public:
  * The ball will only be able to be controlled if the mouse click&drag event originated at
  * the position of the cue ball.
  */
-class CueBall : public BallDecorator, public MouseEventable {
+class CueBall : public BallDecorator {
 protected:
     // keep track of where the mouse click started at
     QVector2D m_startMousePos;
@@ -51,10 +50,8 @@ protected:
     inline bool isSubBallMoving() const { return m_subBall->getVelocity().length() > MovementEpsilon; }
 
 public:
-    CueBall(Ball* b) : BallDecorator(b), MouseEventable(this) {}
-    CueBall(const CueBall& another) : BallDecorator(another.m_subBall), MouseEventable(this){
-        m_subBall = another.m_subBall->clone();
-    }
+    CueBall(Ball* b) : BallDecorator(b) {}
+    CueBall(const CueBall& another) : BallDecorator(another.m_subBall->clone()){}
     ~CueBall() {}
 
     /**
@@ -70,21 +67,21 @@ public:
      *      Chooses not to draw IF the click is not within bounds
      * @param e - the mouse event caused by clicking
      */
-    virtual void mouseClickEvent(QMouseEvent* e) override;
+    virtual void mouseClickEvent(QMouseEvent* e);
     
     /**
      * @brief mouseMoveEvent - update where the current end of the mouse drag is.
      *      Used when the mouse is moved, i.e. not released, but dragged.
      * @param e - the mouse event caused by clicking
      */
-    virtual void mouseMoveEvent(QMouseEvent* e) override;
+    virtual void mouseMoveEvent(QMouseEvent* e);
 
     /**
      * @brief mouseReleaseEvent - update where the end of the mouse drag is, & release the click
      *  This will update the ball velocity if drawn.
      * @param e - the mouse event caused by clicking
      */
-    virtual void mouseReleaseEvent(QMouseEvent* e) override;
+    virtual void mouseReleaseEvent(QMouseEvent* e);
 
     // Ball interface
 public:

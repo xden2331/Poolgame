@@ -251,8 +251,6 @@ Game* StageTwoBuilder::getResult() {
     m_buildingBalls->front() = static_cast<Ball*>(cb);
 
     Game* retGame = new Game(m_buildingBalls, m_buildingTable);
-    // register all the mouse functions for the cueball
-    retGame->addMouseFunctions(cb->getEvents());
 
     // need to reset for when we build next
     m_buildingBalls = nullptr;
