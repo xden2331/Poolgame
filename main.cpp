@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "gamebuilder.h"
 #include "stagetwobuilder.h"
+#include "stagethreebuilder.h"
 #include <QApplication>
 #include <QFile>
 #include <iostream>
@@ -37,8 +38,11 @@ int main(int argc, char *argv[])
     GameDirector director(&conf);
     // use builder2 if we're stage two (defaults to false), otherwise no
     if (conf.value("stage2").toBool(false) == true) {
-       director.setBuilder(new StageTwoBuilder());
-    } else {
+        director.setBuilder(new StageTwoBuilder());
+    } else if(conf.value(("stage3")).toBool((false)) == true){
+        director.setBuilder(new StageThreeBuilder(
+                                new StageTwoBuilder()));
+    }else {
         // set and transfer ownership of this builder to the director
         director.setBuilder(new StageOneBuilder());
     }

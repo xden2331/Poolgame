@@ -15,6 +15,8 @@ class Pocket
     size_t m_sunk = 0;
 public:
     Pocket(double radius, QVector2D pos) : m_radius(radius), m_pos(pos) {}
+    Pocket(const Pocket& pocket):
+        m_radius(pocket.m_radius), m_pos(pocket.m_pos), m_sunk(pocket.m_sunk) {}
 
     /**
      * @brief render - draw the pocket to the screen with the provided brush and offset
@@ -30,4 +32,6 @@ public:
 
     /** add whether this pocket has sunk a ball */
     void incrementSunk() { ++m_sunk; }
+
+    Pocket* clone() const { return new Pocket(*this); }
 };

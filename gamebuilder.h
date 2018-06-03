@@ -32,7 +32,7 @@ public:
 
 class StageOneBuilder : public GameBuilder {
 public:
-    ~StageOneBuilder() {}
+     ~StageOneBuilder() {}
     StageOneBuilder() : GameBuilder(new StageOneFactory()) {}
 
     /**

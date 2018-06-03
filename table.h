@@ -27,8 +27,11 @@ public:
     int getWidth() const { return m_width; }
     int getHeight() const { return m_height; }
     double getFriction() const { return m_friction; }
+    QColor getColor() const { return m_brush.color(); }
 
     virtual bool sinks(Ball*) { return false; }
+
+    virtual Table* clone() const = 0;
 };
 
 class StageOneTable : public Table
@@ -36,11 +39,15 @@ class StageOneTable : public Table
 public:
     StageOneTable(int width, int height, QColor colour, double friction) :
         Table(width, height, colour, friction) {}
+    StageOneTable(const StageOneTable& table):
+        Table(table.getWidth(), table.getHeight(), table.getColor(), table.getFriction()){}
     /**
      * @brief render - draw the stageonetable to screen using the specified painter
      * @param painter - painter to use
      */
     void render(QPainter &painter, const QVector2D& offset) override;
+
+    virtual Table* clone() const override { return new StageOneTable(*this); }
 };
 
 class StageTwoTable : public Table {
@@ -50,6 +57,13 @@ protected:
 public:
     StageTwoTable(int width, int height, QColor colour, double friction) :
         Table(width, height, colour, friction) {}
+    StageTwoTable(const StageTwoTable& table):
+        Table(table.getWidth(), table.getHeight(), table.getColor(), table.getFriction()),
+        m_pockets(std::vector<Pocket*>()){
+        for(auto p : table.m_pockets){
+            m_pockets.push_back(p->clone());
+        }
+    }
 
     ~StageTwoTable();
 
@@ -64,4 +78,6 @@ public:
 
     /* self explanatory */
     void addPocket(Pocket* p) { m_pockets.push_back(p); }
+
+    virtual Table* clone() const override { return new StageTwoTable(*this); }
 };

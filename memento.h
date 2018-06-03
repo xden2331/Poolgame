@@ -18,6 +18,9 @@ private:
     void setupMemento(const std::vector<Ball*>& oriBalls){
         m_state->setupBalls(oriBalls);
     }
+    void setupMemento(const Table& oriTable){
+        m_state->setupTable(oriTable);
+    }
     State* getMemento() const {return m_state;}
 
 private:

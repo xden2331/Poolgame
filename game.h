@@ -9,8 +9,6 @@
 #include "ball.h"
 #include "balldecorator.h"
 #include "utils.h"
-#include "memento.h"
-#include "state.h"
 
 class Game {
     std::vector<Ball*>* m_balls;
@@ -40,7 +38,7 @@ public:
      * @brief Draws all owned objects to the screen (balls and table)
      * @param painter - qtpainter to blit to screen with
      */
-    void render(QPainter& painter) const;
+    virtual void render(QPainter& painter) const;
     /**
      * @brief Updates the positions of all objects within, based on how much time has changed
      * @param dt - time elapsed since last frame in seconds
@@ -77,10 +75,4 @@ public:
         QVector2D collisionVector = ballB->getPosition() - ballA->getPosition();
         return !(collisionVector.length() > ballA->getRadius() + ballB->getRadius());
     }
-
-    Memento* createMemento();
-
-    void revertMemento(Memento& memento);
-
-    std::vector<Ball*>* getBalls() const {return m_balls;}
 };

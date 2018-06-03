@@ -18,9 +18,16 @@ private:
             m_balls.push_back(b->clone());
         }
     }
+
+    void setupTable(const Table& table){
+        m_table = table.clone();
+    }
+
     std::vector<Ball*> getBalls() const {return m_balls;}
+    Table* getTable() const { return m_table; }
 private:
     std::vector<Ball*> m_balls;
+    Table* m_table;
 };
 
 #endif // STATE_H
